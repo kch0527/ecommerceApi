@@ -5,6 +5,7 @@ import com.example.userservice.service.UserService;
 import com.example.userservice.vo.Greeting;
 import com.example.userservice.dto.request.ReqUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,20 +13,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/")
 public class UserController {
-    @Autowired
+
     private UserService userService;
+    private Environment environment;
+
     @Autowired
-    private Greeting greeting;
+    public UserController(UserService userService, Environment environment){
+        this.userService = userService;
+        this.environment = environment;
+    }
 
 
-    @GetMapping("/check")
+    @GetMapping("/user-service/check")
     public String status(){
-        return "It's Working in User Service";
+        return String.format("PORT %s", environment.getProperty("local.server.port"));
     }
 
     @GetMapping("/welcome")
     public String welcome(){
-        return greeting.getMessage();
+        return environment.getProperty("greeting.message");
     }
 
     @PostMapping("/users")
