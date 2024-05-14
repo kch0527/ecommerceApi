@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/")
+@RequestMapping("/user-service/")
 public class UserController {
 
     private UserService userService;
@@ -23,8 +25,7 @@ public class UserController {
         this.environment = environment;
     }
 
-
-    @GetMapping("/user-service/check")
+    @GetMapping("/check")
     public String status(){
         return String.format("PORT %s", environment.getProperty("local.server.port"));
     }
@@ -38,5 +39,17 @@ public class UserController {
     public ResponseEntity<ResUser> createUser(@RequestBody ReqUser user){
         ResUser resUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(resUser);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<ResUser>> getUsers(){
+        List<ResUser> resUsers = userService.getUserByAll();
+        return ResponseEntity.status(HttpStatus.OK).body(resUsers);
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ResUser> getUsers(@PathVariable String userId){
+        ResUser resUsers = userService.getUserByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(resUsers);
     }
 }
