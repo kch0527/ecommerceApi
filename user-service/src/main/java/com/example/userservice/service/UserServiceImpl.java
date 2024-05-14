@@ -5,6 +5,7 @@ import com.example.userservice.dto.response.ResUser;
 import com.example.userservice.jpa.UserEntity;
 import com.example.userservice.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -12,8 +13,14 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService{
 
-    @Autowired
     UserRepository userRepository;
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Override
     public ResUser createUser(ReqUser user) {
@@ -21,7 +28,7 @@ public class UserServiceImpl implements UserService{
                 .email(user.getEmail())
                 .name(user.getName())
                 .userId(UUID.randomUUID().toString())
-                .encryptedPwd(user.getPwd())
+                .encryptedPwd(bCryptPasswordEncoder.encode(user.getPwd()))
                 .build();
         userRepository.save(userEntity);
 
