@@ -36,6 +36,7 @@ dependencies {
 	implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.2.5'
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
 }
 
 dependencyManagement {

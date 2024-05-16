@@ -1,6 +1,6 @@
-package com.example.userservice.dto.response;
+package com.example.userservice.response;
 
-import com.example.userservice.jpa.UserEntity;
+import com.example.userservice.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 

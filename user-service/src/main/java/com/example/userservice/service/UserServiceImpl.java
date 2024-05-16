@@ -1,11 +1,13 @@
 package com.example.userservice.service;
 
-import com.example.userservice.dto.request.ReqUser;
-import com.example.userservice.dto.response.ResOrder;
-import com.example.userservice.dto.response.ResUser;
-import com.example.userservice.jpa.UserEntity;
-import com.example.userservice.jpa.UserRepository;
+import com.example.userservice.request.ReqUser;
+import com.example.userservice.response.ResOrder;
+import com.example.userservice.response.ResUser;
+import com.example.userservice.entity.UserEntity;
+import com.example.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,5 +66,15 @@ public class UserServiceImpl implements UserService{
             result.add(ResUser.entityToRes(u));
         });
         return result;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+       UserEntity userEntity = userRepository.findByEmail(username);
+
+       if(userEntity == null) throw new UsernameNotFoundException(username);
+
+       return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(),
+               true, true, true, true, new ArrayList<>());
     }
 }
