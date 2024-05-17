@@ -1,6 +1,7 @@
 package com.example.userservice.security;
 
 import com.example.userservice.request.ReqLogin;
+import com.example.userservice.response.ResUser;
 import com.example.userservice.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -50,6 +52,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        //super.successfulAuthentication(request, response, chain, authResult);
+        String userName = ((User) authResult.getPrincipal()).getUsername();
+        ResUser resUser = userService.getUserDetailsByEmail(userName);
     }
 }
