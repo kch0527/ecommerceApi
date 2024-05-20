@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/chan_db?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3307/chan_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
     username: root
     password: 8965
 
@@ -27,4 +27,8 @@ eureka:
 
 greeting:
   message: Welcome to the Simple E-commerce
+
+token:
+  expiration_time: 86400000
+  secret: user_token_token_token
 

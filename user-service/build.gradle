@@ -37,6 +37,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.2.5'
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.12.5'
 }
 
 dependencyManagement {
