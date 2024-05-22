@@ -3,6 +3,7 @@ package com.example.userservice.controller;
 import com.example.userservice.response.ResUser;
 import com.example.userservice.service.UserService;
 import com.example.userservice.request.ReqUser;
+import com.example.userservice.vo.Greeting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -24,9 +25,19 @@ public class UserController {
         this.environment = environment;
     }
 
+    @Autowired
+    private Greeting greeting;
+
     @GetMapping("/check")
     public String status(){
-        return String.format("PORT %s", environment.getProperty("local.server.port"));
+        return String.format("It's Working in User Service"
+                + ", port(local.server.port)=" + environment.getProperty("local.server.port")
+                + ", port(server.port)=" + environment.getProperty("server.port")
+                + ", gateway ip(env)=" + environment.getProperty("gateway.ip")
+                //+ ", gateway ip(value)=" + greeting.getIp()
+                + ", message=" + environment.getProperty("greeting.message")
+                + ", token secret=" + environment.getProperty("token.secret")
+                + ", token expiration time=" + environment.getProperty("token.expiration_time"));
     }
 
     @GetMapping("/welcome")

@@ -9,4 +9,10 @@ import org.springframework.stereotype.Component;
 public class Greeting {
     @Value("${greeting.message}")
     private String message;
+
+    //@Value("${gateway.ip}")
+    //private String ip;
+
+    //@Value("${token.secret}")
+    //private String secret;
 }
