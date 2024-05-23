@@ -75,6 +75,4 @@ management:
       exposure:
         include: refresh, health, beans, httpexchanges, busrefresh
 
-token:
-  secret: user_token_token_token
 

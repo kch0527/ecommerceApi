@@ -8,12 +8,6 @@ spring:
     username: guest
     password: guest
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/chan_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
-    username: root
-    password: 8965
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -40,8 +34,5 @@ management:
       exposure:
         include: refresh, health, beans, busrefresh
 
-#token:
-#  expiration_time: 86400000
-#  secret: user_token
 
 
