@@ -6,11 +6,16 @@ import com.example.userservice.response.ResUser;
 import com.example.userservice.entity.UserEntity;
 import com.example.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +26,15 @@ public class UserServiceImpl implements UserService{
 
     UserRepository userRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder;
+    Environment environment;
+    RestTemplate restTemplate;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, Environment environment, RestTemplate restTemplate){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.environment = environment;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -51,8 +60,12 @@ public class UserServiceImpl implements UserService{
 
         ResUser resUser = ResUser.entityToRes(userEntity);
 
-        List<ResOrder> orders = new ArrayList<>();
-        resUser.setOrders(orders);
+        String orderUrl = String.format(environment.getProperty("order_service.url"), userId);
+        ResponseEntity<List<ResOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<ResOrder>>() {
+        });
+
+        List<ResOrder> orderList = orderListResponse.getBody();
+        resUser.setOrders(orderList);
 
         return resUser;
     }
