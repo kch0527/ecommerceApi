@@ -1,5 +1,6 @@
 package com.example.userservice.service;
 
+import com.example.userservice.client.OrderServiceClient;
 import com.example.userservice.request.ReqUser;
 import com.example.userservice.response.ResOrder;
 import com.example.userservice.response.ResUser;
@@ -27,14 +28,15 @@ public class UserServiceImpl implements UserService{
     UserRepository userRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     Environment environment;
-    RestTemplate restTemplate;
+
+    OrderServiceClient orderServiceClient;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, Environment environment, RestTemplate restTemplate){
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, Environment environment, OrderServiceClient orderServiceClient){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.environment = environment;
-        this.restTemplate = restTemplate;
+        this.orderServiceClient = orderServiceClient;
     }
 
     @Override
@@ -60,11 +62,7 @@ public class UserServiceImpl implements UserService{
 
         ResUser resUser = ResUser.entityToRes(userEntity);
 
-        String orderUrl = String.format(environment.getProperty("order_service.url"), userId);
-        ResponseEntity<List<ResOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<ResOrder>>() {
-        });
-
-        List<ResOrder> orderList = orderListResponse.getBody();
+        List<ResOrder> orderList = orderServiceClient.getOrders(userId);
         resUser.setOrders(orderList);
 
         return resUser;
