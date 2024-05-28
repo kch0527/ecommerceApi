@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService{
     UserRepository userRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     Environment environment;
-
     OrderServiceClient orderServiceClient;
 
     @Autowired
