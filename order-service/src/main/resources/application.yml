@@ -2,12 +2,6 @@ spring:
   application:
     name: order-service
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/chan_db?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-    username: root
-    password: 8965
-
   jpa:
     hibernate:
       ddl-auto: update

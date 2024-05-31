@@ -1,6 +1,7 @@
 package com.example.orderservice.service;
 
 import com.example.orderservice.entity.OrderEntity;
+import com.example.orderservice.kafka.KafkaProducer;
 import com.example.orderservice.repository.OrderRepository;
 import com.example.orderservice.request.ReqOrder;
 import com.example.orderservice.response.ResOrder;
@@ -14,10 +15,12 @@ import java.util.UUID;
 @Service
 public class OrderServiceImpl implements OrderService{
     OrderRepository orderRepository;
+    KafkaProducer kafkaProducer;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, KafkaProducer kafkaProducer) {
         this.orderRepository = orderRepository;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Override
@@ -31,6 +34,9 @@ public class OrderServiceImpl implements OrderService{
                 .orderId(UUID.randomUUID().toString())
                 .build();
         orderRepository.save(orderEntity);
+
+        //kafka
+        sendOrderKafka(orderEntity);
 
         ResOrder resOrder = ResOrder.entityToRes(orderEntity);
         return resOrder;
@@ -53,5 +59,10 @@ public class OrderServiceImpl implements OrderService{
             result.add(ResOrder.entityToRes(o));
         });
         return result;
+    }
+
+    @Override
+    public void sendOrderKafka(OrderEntity orderEntity) {
+        kafkaProducer.send("catalog-topic", orderEntity);
     }
 }
