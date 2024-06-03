@@ -8,9 +8,9 @@ import java.util.Date;
 public class ResOrder {
     private String productId;
     private Integer qty;
-    private Integer price;
+    private Integer unitPrice;
     private Integer totalPrice;
-    private Date orderDt;
+    private Date createdAt;
 
     private String orderId;
 }

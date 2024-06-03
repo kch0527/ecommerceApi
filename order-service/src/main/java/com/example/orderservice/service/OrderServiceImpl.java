@@ -67,6 +67,6 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public void sendOrderKafka(OrderEntity orderEntity) {
         kafkaProducer.send("catalog-topic", orderEntity);
-        orderProducer.send("orders", orderEntity);
+        orderProducer.send("my_topic_orders", orderEntity);
     }
 }
