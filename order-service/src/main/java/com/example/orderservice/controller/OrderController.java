@@ -27,12 +27,14 @@ public class OrderController {
     public ResponseEntity<ResOrder> createOrder(@PathVariable("userId") String userId, @RequestBody ReqOrder reqOrder) {
         reqOrder.setUserId(userId);
         ResOrder resOrder = orderService.createOrder(reqOrder);
+
         return  ResponseEntity.status(HttpStatus.CREATED).body(resOrder);
     }
 
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResOrder>> getOrders(@PathVariable("userId") String userId) throws Exception{
         List<ResOrder> orderList = orderService.getOrderByUserId(userId);
+
         return ResponseEntity.status(HttpStatus.OK).body(orderList);
     }
 }

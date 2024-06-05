@@ -58,6 +58,14 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/actuator/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
 
 server:
   port: 8000
@@ -73,6 +81,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httpexchanges, busrefresh
+        include: refresh, health, beans, httpexchanges, busrefresh, info, metrics, prometheus
 
 

@@ -6,6 +6,7 @@ import com.example.userservice.response.ResOrder;
 import com.example.userservice.response.ResUser;
 import com.example.userservice.entity.UserEntity;
 import com.example.userservice.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService{
 
     UserRepository userRepository;

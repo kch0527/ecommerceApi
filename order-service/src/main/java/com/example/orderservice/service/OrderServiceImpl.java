@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService{
         orderRepository.save(orderEntity);
 
         //kafka
-        sendOrderKafka(orderEntity);
+        //sendOrderKafka(orderEntity);
 
         ResOrder resOrder = ResOrder.entityToRes(orderEntity);
         return resOrder;
