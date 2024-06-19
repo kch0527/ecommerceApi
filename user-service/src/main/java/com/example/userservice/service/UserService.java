@@ -14,4 +14,6 @@ public interface UserService extends UserDetailsService {
     List<ResUser> getUserByAll();
 
     ResUser getUserDetailsByEmail(String userName);
+
+    ResUser updateUser(String userId, ReqUser reqUser);
 }

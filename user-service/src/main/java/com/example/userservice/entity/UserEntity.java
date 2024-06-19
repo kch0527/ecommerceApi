@@ -33,4 +33,15 @@ public class UserEntity {
         this.userId = userId;
         this.encryptedPwd = encryptedPwd;
     }
+
+    public UserEditor.UserEditorBuilder toEditor(){
+        return UserEditor.builder()
+                .name(name)
+                .encryptedPwd(encryptedPwd);
+    }
+
+    public void edit(UserEditor userEditor){
+        name = userEditor.getName();
+        encryptedPwd = userEditor.getEncryptedPwd();
+    }
 }

@@ -1,11 +1,13 @@
 package com.example.userservice.service;
 
 import com.example.userservice.client.OrderServiceClient;
+import com.example.userservice.entity.UserEditor;
 import com.example.userservice.request.ReqUser;
 import com.example.userservice.response.ResOrder;
 import com.example.userservice.response.ResUser;
 import com.example.userservice.entity.UserEntity;
 import com.example.userservice.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -100,6 +102,23 @@ public class UserServiceImpl implements UserService{
     public ResUser getUserDetailsByEmail(String email) {
         UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) throw new UsernameNotFoundException(email);
+
+        ResUser resUser = ResUser.entityToRes(userEntity);
+        return resUser;
+    }
+
+    @Override
+    @Transactional
+    public ResUser updateUser(String userId, ReqUser reqUser) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if(userEntity == null) throw new UsernameNotFoundException("User Not Found");
+
+        UserEditor.UserEditorBuilder userEditorBuilder = userEntity.toEditor();
+        UserEditor userEditor = userEditorBuilder
+                .name(reqUser.getName())
+                .encryptedPwd(bCryptPasswordEncoder.encode(reqUser.getPwd()))
+                .build();
+        userEntity.edit(userEditor);
 
         ResUser resUser = ResUser.entityToRes(userEntity);
         return resUser;
