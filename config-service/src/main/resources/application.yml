@@ -16,6 +16,7 @@ spring:
         git:
           default-label: main
           uri: https://github.com/kch0527/spring-cloud-config
+        bootstrap: true
 
 server:
   port: 8888
