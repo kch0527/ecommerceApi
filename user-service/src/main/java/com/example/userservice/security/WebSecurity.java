@@ -29,10 +29,6 @@ public class WebSecurity {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private Environment env;
 
-    public static final String ALLOWED_IP_ADDRESS = "127.0.0.1";
-    public static final String SUBNET = "/32";
-    public static final IpAddressMatcher ALLOWED_IP_ADDRESS_MATCHER = new IpAddressMatcher(ALLOWED_IP_ADDRESS + SUBNET);
-
     @Autowired
     public WebSecurity(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, Environment env) {
         this.userService = userService;
@@ -52,9 +48,9 @@ public class WebSecurity {
 
         http.authorizeHttpRequests((authz) -> authz
                 .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/users/**")).permitAll()
-                .requestMatchers("/**").access(
-                        new WebExpressionAuthorizationManager("hasIpAddress('127.0.0.1') or hasIpAddress('192.168.55.87')"))
+                .requestMatchers(new AntPathRequestMatcher("/users", "POST")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/check")).permitAll()
+                .requestMatchers("/**").access(new WebExpressionAuthorizationManager("hasIpAddress('127.0.0.1')"))
                 .anyRequest().authenticated()
         )
                 .authenticationManager(authenticationManager)
@@ -65,10 +61,6 @@ public class WebSecurity {
         http.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.sameOrigin()));
 
         return http.build();
-    }
-
-    private AuthorizationDecision hasIpAddress(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
-        return new AuthorizationDecision(ALLOWED_IP_ADDRESS_MATCHER.matches(object.getRequest()));
     }
 
     private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {

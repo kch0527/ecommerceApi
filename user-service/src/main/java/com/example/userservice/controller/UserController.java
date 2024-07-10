@@ -1,17 +1,24 @@
 package com.example.userservice.controller;
 
+import com.example.userservice.entity.UserEntity;
 import com.example.userservice.response.ResUser;
 import com.example.userservice.service.UserService;
 import com.example.userservice.request.ReqUser;
-import com.example.userservice.vo.Greeting;
 import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/")
@@ -26,8 +33,6 @@ public class UserController {
         this.environment = environment;
     }
 
-    @Autowired
-    private Greeting greeting;
 
     @GetMapping("/check")
     @Timed(value = "users.status", longTask = true)
@@ -35,15 +40,8 @@ public class UserController {
         return String.format("It's Working in User Service"
                 + ", port(local.server.port)=" + environment.getProperty("local.server.port")
                 + ", port(server.port)=" + environment.getProperty("server.port")
-                + ", gateway ip(env)=" + environment.getProperty("gateway.ip")
                 + ", token secret=" + environment.getProperty("token.secret")
                 + ", token expiration time=" + environment.getProperty("token.expiration_time"));
-    }
-
-    @GetMapping("/welcome")
-    @Timed(value = "users.welcome", longTask = true)
-    public String welcome(){
-        return environment.getProperty("greeting.message");
     }
 
     @PostMapping("/users")
@@ -59,9 +57,32 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<ResUser> getUsers(@PathVariable String userId){
+    public ResponseEntity getUser(@PathVariable String userId){
         ResUser resUsers = userService.getUserByUserId(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(resUsers);
+
+        EntityModel entityModel = EntityModel.of(resUsers);
+        WebMvcLinkBuilder webMvcLinkBuilder = linkTo(methodOn(this.getClass()).getUsers());
+        entityModel.add(webMvcLinkBuilder.withRel("all-users"));
+
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(entityModel);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @GetMapping("/users/hateoas")
+    public ResponseEntity<CollectionModel<EntityModel<ResUser>>> getUserWithHateoas() {
+        List<EntityModel<ResUser>> result = new ArrayList<>();
+        Iterable<ResUser> users = userService.getUserByAll();
+
+        for (ResUser user : users) {
+            EntityModel entityModel = EntityModel.of(user);
+            entityModel.add(linkTo(methodOn(this.getClass()).getUser(user.getUserId())).withSelfRel());
+
+            result.add(entityModel);
+        }
+        return ResponseEntity.ok(CollectionModel.of(result, linkTo(methodOn(this.getClass()).getUserWithHateoas()).withSelfRel()));
     }
 
     @PutMapping("/users/{userId}")
