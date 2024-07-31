@@ -27,18 +27,32 @@ public class KafkaConsumer {
     public void updateQty(String kafkaMessage) {
         log.info("kafka Message:" + kafkaMessage);
 
-        Map<Object, Object> map = new HashMap<>();
+        Map<Object, Object> map;
         ObjectMapper mapper = new ObjectMapper();
         try{
             map = mapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {});
         }catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Error JSON message: {}", kafkaMessage, e);
+            return;
         }
 
         CatalogEntity catalogEntity = catalogRepository.findByProductId((String)map.get("productId"));
-        if(catalogEntity != null) {
-            catalogEntity.setStock(catalogEntity.getStock() - (Integer) map.get("qty"));
-            catalogRepository.save(catalogEntity);
+
+        if(catalogEntity == null){
+            log.warn("not found", (String) map.get("productId"));
+            return;
         }
+
+        int currentStock = catalogEntity.getStock();
+        int orderQty = (Integer) map.get("qty");
+
+        if(currentStock < orderQty){
+            log.error("Insufficient stock - requested {}, available {}", orderQty, currentStock);
+            return;
+        }
+
+        catalogEntity.setStock(catalogEntity.getStock() - (Integer) map.get("qty"));
+        catalogRepository.save(catalogEntity);
+        log.info("Stock updated");
     }
 }
