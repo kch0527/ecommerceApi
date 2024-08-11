@@ -4,7 +4,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
 
 server:
@@ -36,8 +36,6 @@ management:
 logging:
   level:
     com.example.userservice.client: DEBUG
-  #pattern:
-    #level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 
 
 

@@ -3,6 +3,7 @@ package com.example.orderservice.controller;
 import com.example.orderservice.request.ReqOrder;
 import com.example.orderservice.response.ResOrder;
 import com.example.orderservice.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @Operation(summary = "주문을 위한 API", description = "order-service에 주문을 위한 API")
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResOrder> createOrder(@PathVariable("userId") String userId, @RequestBody ReqOrder reqOrder) {
         reqOrder.setUserId(userId);
@@ -31,6 +33,7 @@ public class OrderController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(resOrder);
     }
 
+    @Operation(summary = "회원의 주문 목록을 위한 API", description = "order-service에 회원 주문 목록을 위한 API")
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResOrder>> getOrders(@PathVariable("userId") String userId) throws Exception{
         List<ResOrder> orderList = orderService.getOrderByUserId(userId);

@@ -34,18 +34,6 @@ public class UserController {
         this.environment = environment;
     }
 
-
-    @Operation(summary = "Health check API", description = "Health check를 위한 API")
-    @GetMapping("/check")
-    @Timed(value = "users.status", longTask = true)
-    public String status(){
-        return String.format("It's Working in User Service"
-                + ", port(local.server.port)=" + environment.getProperty("local.server.port")
-                + ", port(server.port)=" + environment.getProperty("server.port")
-                + ", token secret=" + environment.getProperty("token.secret")
-                + ", token expiration time=" + environment.getProperty("token.expiration_time"));
-    }
-
     @Operation(summary = "회원 가입을 위한 API", description = "user-service에 회원 가입을 위한 API")
     @PostMapping("/users")
     public ResponseEntity<ResUser> createUser(@RequestBody ReqUser user){
