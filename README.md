@@ -13,16 +13,27 @@
 - JPA, Querydsl</br>
 - MariaDB</br>
 - Kafka</br>
-- Swagger
+- Swagger</br>
+- Docker
 
 </br>
 
 🏃 기여
 ---------
-- 모듈화된 애플리케이션 백엔드개발 </br>
-- Spring cloud를 활용한 MSA 아키텍처 구축 </br>
+- Spring cloud를 활용한 MSA아키텍처 구축 </br>
+  1. 각 서비스별 모듈화된 애플리케이션 백엔드 개발 </br>
+  2. Eureka & Gateway를 활용한 서비스 간 호출 관리 </br>
+  3. Spring Cloud Config를 활용한 외부 설정 정보 관리 </br>
+- 회원가입 및 로그인 </br>
+  1. 회원가입시 비밀번호 암호화 처리 </br>
+  2. 로그인시 JWT를 활용한 인증 </br>
 - Kafka를 통한 데이터 처리 </br>
-- Swagger를 이용한 문서 </br>
+  1. 물건 구매시 Kafka를 활용해 재고 수량 실시간 업데이트 </br>
+- Swagger를 활용한 문서화 </br>
+  1. 각 서비스별 API 문서화 생성 및 관리 </br>
+- Docker를 활용한 가상화 </br>
+  1. 각 서비스별 컨테이너화 및 가상 환경 구축 </br>
+  2. Docker Network 사용한 서비스 간 네트워크 관리 및 통신 설정 </br>
 
 </br>
 
