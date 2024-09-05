@@ -34,6 +34,7 @@ public class CatalogServiceImpl implements CatalogService{
         CatalogEntity catalogEntity = catalogRepository.findById(id).orElseThrow();
 
         return ResCatalog.builder()
+                .id(id)
                 .productId(catalogEntity.getProductId())
                 .productName(catalogEntity.getProductName())
                 .stock(catalogEntity.getStock())

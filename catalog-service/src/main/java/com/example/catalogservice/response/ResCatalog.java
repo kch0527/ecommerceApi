@@ -25,7 +25,8 @@ public class ResCatalog {
     }
 
     @Builder
-    public ResCatalog(String productId, String productName, Integer unitPrice, Integer stock) {
+    public ResCatalog(Long id, String productId, String productName, Integer unitPrice, Integer stock) {
+        this.id = id;
         this.productId = productId;
         this.productName = productName;
         this.unitPrice = unitPrice;

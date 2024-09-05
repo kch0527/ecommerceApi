@@ -31,8 +31,7 @@ public class CatalogController {
 
     @Operation(summary = "제품 상세을 위한 API", description = "catalog-service에 제품 상세을 위한 API")
     @GetMapping("/catalogs/{id}")
-    public ResponseEntity<ResCatalog> getCatalog(@PathVariable Long id){
-        ResCatalog resCatalog = catalogService.getCatalog(id);
-        return ResponseEntity.status(HttpStatus.OK).body(resCatalog);
+    public ResCatalog getCatalog(@PathVariable Long id){
+        return catalogService.getCatalog(id);
     }
 }
