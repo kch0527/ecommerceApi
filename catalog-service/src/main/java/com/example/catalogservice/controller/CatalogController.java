@@ -7,13 +7,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/catalog-service")
 public class CatalogController {
@@ -27,9 +25,8 @@ public class CatalogController {
 
     @Operation(summary = "제품 목록을 위한 API", description = "catalog-service에 제품 목록을 위한 API")
     @GetMapping("/catalogs")
-    public ResponseEntity<List<ResCatalog>> getCatalogs(SearchCatalog searchCatalog) {
-        List<ResCatalog> resCatalogs = catalogService.getCatalogListWithPageAndSort(searchCatalog);
-        return ResponseEntity.status(HttpStatus.OK).body(resCatalogs);
+    public List<ResCatalog> getCatalogs(@ModelAttribute SearchCatalog searchCatalog) {
+        return catalogService.getCatalogListWithPageAndSort(searchCatalog);
     }
 
     @Operation(summary = "제품 상세을 위한 API", description = "catalog-service에 제품 상세을 위한 API")

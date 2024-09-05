@@ -10,12 +10,14 @@ import java.util.Date;
 @Getter
 //@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResCatalog {
+    private Long id;
     private String productId;
     private String productName;
     private Integer unitPrice;
     private Integer stock;
 
     public ResCatalog(CatalogEntity catalogEntity){
+        this.id = catalogEntity.getId();
         this.productId = catalogEntity.getProductId();
         this.productName = catalogEntity.getProductName();
         this.unitPrice = catalogEntity.getUnitPrice();
