@@ -23,6 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/")
+@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 public class UserController {
 
     private UserService userService;
@@ -36,9 +37,8 @@ public class UserController {
 
     @Operation(summary = "회원 가입을 위한 API", description = "user-service에 회원 가입을 위한 API")
     @PostMapping("/users")
-    public ResponseEntity<ResUser> createUser(@RequestBody ReqUser user){
-        ResUser resUser = userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(resUser);
+    public ResUser createUser(@RequestBody ReqUser user){
+        return userService.createUser(user);
     }
 
     @Operation(summary = "전체 사용자 목록조회 API", description = "전체 사용자 목록을 조회하기 위한 API")

@@ -2,6 +2,9 @@ package com.example.userservice.service;
 
 import com.example.userservice.client.OrderServiceClient;
 import com.example.userservice.entity.UserEditor;
+import com.example.userservice.exception.ErrorCode;
+import com.example.userservice.exception.UserException;
+import com.example.userservice.request.ReqLogin;
 import com.example.userservice.request.ReqUser;
 import com.example.userservice.response.ResOrder;
 import com.example.userservice.response.ResUser;
@@ -18,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +48,10 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public ResUser createUser(ReqUser user) {
+        if(userRepository.findByEmail(user.getEmail()) != null){
+            throw new UserException(ErrorCode.DUPLICATED_EMAIL);
+        }
+
         UserEntity userEntity = UserEntity.builder()
                 .email(user.getEmail())
                 .name(user.getName())
@@ -84,6 +92,7 @@ public class UserServiceImpl implements UserService{
         return result;
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
        UserEntity userEntity = userRepository.findByEmail(username);
@@ -94,6 +103,7 @@ public class UserServiceImpl implements UserService{
                true, true, true, true, new ArrayList<>());
     }
 
+
     @Override
     public ResUser getUserDetailsByEmail(String email) {
         UserEntity userEntity = userRepository.findByEmail(email);
@@ -102,6 +112,7 @@ public class UserServiceImpl implements UserService{
         ResUser resUser = ResUser.entityToRes(userEntity);
         return resUser;
     }
+
 
     @Override
     @Transactional
