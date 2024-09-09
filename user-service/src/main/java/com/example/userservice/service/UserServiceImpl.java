@@ -4,9 +4,10 @@ import com.example.userservice.client.OrderServiceClient;
 import com.example.userservice.entity.UserEditor;
 import com.example.userservice.exception.ErrorCode;
 import com.example.userservice.exception.UserException;
-import com.example.userservice.request.ReqLogin;
+import com.example.userservice.request.ReqPwCheck;
 import com.example.userservice.request.ReqUser;
 import com.example.userservice.response.ResOrder;
+import com.example.userservice.response.ResPwCheck;
 import com.example.userservice.response.ResUser;
 import com.example.userservice.entity.UserEntity;
 import com.example.userservice.repository.UserRepository;
@@ -129,5 +130,24 @@ public class UserServiceImpl implements UserService{
 
         ResUser resUser = ResUser.entityToRes(userEntity);
         return resUser;
+    }
+
+    @Override
+    public ResPwCheck checkPassword(ReqPwCheck reqPwCheck) {
+        UserEntity userEntity = userRepository.findByUserId(reqPwCheck.getUserId());
+
+        if (userEntity == null) {
+            return null;
+        }
+
+        boolean isPasswordMatch = bCryptPasswordEncoder.matches(reqPwCheck.getPassword(), userEntity.getEncryptedPwd());
+
+        if (isPasswordMatch) {
+            ResPwCheck res = new ResPwCheck();
+            res.setUserId(userEntity.getUserId());
+            return res;
+        } else {
+            return null; // 비밀번호 불일치
+        }
     }
 }

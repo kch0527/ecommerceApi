@@ -1,6 +1,8 @@
 package com.example.userservice.controller;
 
 import com.example.userservice.entity.UserEntity;
+import com.example.userservice.request.ReqPwCheck;
+import com.example.userservice.response.ResPwCheck;
 import com.example.userservice.response.ResUser;
 import com.example.userservice.service.UserService;
 import com.example.userservice.request.ReqUser;
@@ -95,8 +97,14 @@ public class UserController {
 
     @Operation(summary = "사용자 정보 수정을 위한 API", description = "사용자 정보 수정을 하기 위한 API")
     @PutMapping("/users/{userId}")
-    public ResponseEntity<ResUser> updateUser(@PathVariable String userId, ReqUser reqUser){
+    public ResponseEntity<ResUser> updateUser(@PathVariable String userId, @RequestBody ReqUser reqUser){
         ResUser resUsers = userService.updateUser(userId, reqUser);
         return ResponseEntity.status(HttpStatus.OK).body(resUsers);
+    }
+
+    @Operation(summary = "패스워드 확인을 위한 API", description = "패스워드 확인을 위한 API")
+    @PostMapping("/pwCheck")
+    public ResPwCheck passwordCheck(@RequestBody ReqPwCheck reqPwCheck){
+        return userService.checkPassword(reqPwCheck);
     }
 }
