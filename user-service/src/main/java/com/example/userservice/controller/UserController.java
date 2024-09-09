@@ -4,8 +4,14 @@ import com.example.userservice.entity.UserEntity;
 import com.example.userservice.response.ResUser;
 import com.example.userservice.service.UserService;
 import com.example.userservice.request.ReqUser;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.hateoas.CollectionModel;
@@ -16,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -39,6 +47,13 @@ public class UserController {
     @PostMapping("/users")
     public ResUser createUser(@RequestBody ReqUser user){
         return userService.createUser(user);
+    }
+
+    @Operation(summary = "로그아웃을 위한 API", description = "로그아웃을 위한 API")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "전체 사용자 목록조회 API", description = "전체 사용자 목록을 조회하기 위한 API")

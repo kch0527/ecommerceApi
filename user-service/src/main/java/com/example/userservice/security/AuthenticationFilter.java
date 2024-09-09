@@ -67,9 +67,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         Instant now = Instant.now();
 
         String token = Jwts.builder()
-                .subject(resUser.getUserId()) //제목
-                .expiration(Date.from(now.plusMillis(Long.parseLong(environment.getProperty("token.expiration_time"))))) //만료일
-                .issuedAt(Date.from(now)) //발행일
+                .setSubject(resUser.getEmail()) //제목
+                .setExpiration(Date.from(now.plusMillis(Long.parseLong(environment.getProperty("token.expiration_time"))))) //만료일
                 .signWith(secretKey)
                 .compact();
         response.addHeader("token", token);

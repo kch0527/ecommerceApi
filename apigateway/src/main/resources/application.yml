@@ -12,19 +12,20 @@ spring:
     gateway:
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
-
       globalcors:
-        cors-configurations:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:8080'
+            allowedOrigins: "http://localhost:8080"
             allow-credentials: true
+            allowedHeaders: '*'
+            exposedHeaders: '*'
             allowedMethods:
-              - GET
               - POST
+              - GET
               - PUT
-              - DELETE
               - OPTIONS
-            allowedHeaders: "*"
+              - DELETE
 
       routes:
         - id: user-service-login

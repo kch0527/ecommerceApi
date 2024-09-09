@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.core.env.Environment;
 import org.springframework.web.cors.CorsConfiguration;
@@ -30,11 +31,14 @@ public class WebSecurity {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private Environment env;
 
+    private JwtAuthorizationFilter jwtAuthorizationFilter;
+
     @Autowired
-    public WebSecurity(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, Environment env) {
+    public WebSecurity(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, Environment env, JwtAuthorizationFilter jwtAuthorizationFilter) {
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.env = env;
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
     }
 
     @Bean
@@ -55,18 +59,19 @@ public class WebSecurity {
                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/**").access(new WebExpressionAuthorizationManager("hasIpAddress('127.0.0.1')"))
                 .anyRequest().authenticated()
         )
                 .authenticationManager(authenticationManager)
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilter(getAuthenticationFilter(authenticationManager));
+        http.addFilter(getAuthenticationFilter(authenticationManager)); //로그인 요청 처리
+        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         http.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.sameOrigin()));
 
         return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -75,11 +80,13 @@ public class WebSecurity {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization","token","userId"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);  // 모든 경로에 대해 CORS 설정 적용
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
     private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
         return new AuthenticationFilter(authenticationManager, userService, env);
